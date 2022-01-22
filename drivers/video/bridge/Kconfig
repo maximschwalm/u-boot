@@ -33,3 +33,10 @@ config VIDEO_BRIDGE_ANALOGIX_ANX6345
 	help
 	 The Analogix ANX6345 is RGB-to-DP converter. It enables an eDP LCD
 	 panel to be connected to an parallel LCD interface.
+
+config VIDEO_BRIDGE_TF700T_MIPI
+	bool "Support Toshiba TC358768 MIPI DSI bridge"
+	depends on VIDEO_BRIDGE
+	select DM_I2C
+	help
+	 Found in Asus Transformer Infinity TF700T.
