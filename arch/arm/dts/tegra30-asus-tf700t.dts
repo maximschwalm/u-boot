@@ -9,6 +9,51 @@
 / {
 	model = "Asus Transformer Infinity TF700T";
 
+	host1x@50000000 {
+		status = "okay";
+		dc@54200000 {
+			status = "okay";
+			rgb {
+				status = "okay";
+
+				nvidia,panel = <&panel>;
+
+				display-timings {
+					timing@0 {
+						/* 1920x1200@60Hz */
+						clock-frequency = <154000000>;
+						hactive = <1920>;
+						vactive = <1200>;
+						hfront-porch = <48>;
+						hback-porch = <80>;
+						hsync-len = <32>;
+						vsync-len = <6>;
+						vfront-porch = <3>;
+						vback-porch = <26>;
+					};
+				};
+			};
+		};
+	};
+
+	i2c@7000c000 {
+		status = "okay";
+		clock-frequency = <100000>;
+
+		dsi-bridge@7 {
+			compatible = "tf700t,mipi-bridge";
+			reg = <0x7>;
+
+			ldo-gpios = <&gpio TEGRA_GPIO(U, 5) GPIO_ACTIVE_HIGH>;
+
+			vdd-gpios = <&gpio TEGRA_GPIO(BB, 3) GPIO_ACTIVE_HIGH>;
+			vddio-gpios = <&gpio TEGRA_GPIO(C, 6) GPIO_ACTIVE_HIGH>;
+
+			lvds-gpios = <&gpio TEGRA_GPIO(N, 6) GPIO_ACTIVE_HIGH>;
+			power-gpios = <&gpio TEGRA_GPIO(X, 0) GPIO_ACTIVE_HIGH>; /* I2C Switch */
+		};
+	};
+
 	i2c@7000d000 {
 		status = "okay";
 		clock-frequency = <400000>;
@@ -85,6 +130,15 @@
 			gpios = <&gpio TEGRA_GPIO(Q, 3) GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_DOWN>;
 		};
+	};
+
+	panel: panel {
+		compatible = "simple-panel";
+
+		power-supply = <&vdd_pnl_reg>;
+		enable-gpios = <&gpio TEGRA_GPIO(D, 2) GPIO_ACTIVE_HIGH>;
+
+		backlight = <&backlight>;
 	};
 
 	regulators {
