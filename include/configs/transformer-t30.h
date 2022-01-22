@@ -18,8 +18,7 @@
 #define TRANSFORMER_VOLDOWN_ACTION \
 	"setenv gpio_vol_down 132;" \
 	"if run check_button;" \
-	"then echo Starting Fastboot protocol ...;" \
-		"fastboot usb 0;"
+	"then sf probe;"
 #else
 #define TRANSFORMER_VOLDOWN_ACTION \
 	"setenv gpio_vol_down 131;" \
