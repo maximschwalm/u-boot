@@ -92,6 +92,10 @@ void pinmux_init(void)
 
 	/* Initialize any non-default pad configs (APB_MISC_GP regs) */
 	pinmux_config_drvgrp_table(cardhu_padctrl, ARRAY_SIZE(cardhu_padctrl));
+
+#ifdef CONFIG_VIDEO_BRIDGE_TF700T_MIPI
+	pinmux_config_pingrp_table(tf700t_pinmux, ARRAY_SIZE(tf700t_pinmux));
+#endif
 }
 
 #ifdef CONFIG_MMC_SDHCI_TEGRA
