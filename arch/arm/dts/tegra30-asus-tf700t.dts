@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+#include <dt-bindings/input/input.h>
+
+#include "tegra30-asus-transformer.dtsi"
+
+/ {
+	model = "ASUS Transformer Infinity TF700T";
+
+	/delete-node/ host1x@50000000;
+	
+	/delete-node/ panel;
+};

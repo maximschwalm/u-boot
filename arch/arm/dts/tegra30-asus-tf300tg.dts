@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+#include <dt-bindings/input/input.h>
+
+#include "tegra30-asus-transformer.dtsi"
+
+/ {
+	model = "ASUS Transformer Pad 3G TF300TG";
+};
