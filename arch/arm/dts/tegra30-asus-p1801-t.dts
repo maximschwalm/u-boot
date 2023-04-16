@@ -3,16 +3,137 @@
 
 #include <dt-bindings/input/input.h>
 
-#include "tegra30-asus-transformer.dtsi"
+#include "tegra30.dtsi"
 
 / {
-	model = "ASUS Transformer AiO P1801-T";
+	model = "ASUS Portable AiO P1801-T";
+	compatible = "asus,p1801-t", "nvidia,tegra30";
 
-	/delete-node/ host1x@50000000;
+	/* PMIC has a built-in 32KHz oscillator which is used by PMC */
+	clk32k_in: clock-32k {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <32768>;
+		clock-output-names = "pmic-oscillator";
+	};
 
-	/delete-node/ backlight;
-	/delete-node/ panel;
+	gpio-keys {
+		compatible = "gpio-keys";
 
-	/delete-node/ regulator-pnl;
-	/delete-node/ regulator-bl;
+		key-power {
+			label = "Power";
+			gpios = <&gpio TEGRA_GPIO(V, 0) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_ENTER>;
+		};
+
+		key-volume-down {
+			label = "Volume Down";
+			gpios = <&gpio TEGRA_GPIO(Q, 3) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_DOWN>;
+		};
+
+		key-volume-up {
+			label = "Volume Up";
+			gpios = <&gpio TEGRA_GPIO(Q, 2) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_UP>;
+		};
+	};
+};
+
+&aliases {
+	mmc0 = &sdmmc4;	/* eMMC */
+	mmc1 = &sdmmc1; /* uSD slot */
+
+	usb0 = &usb1;
+	usb1 = &usb2; /* mini-USB port */
+	usb2 = &usb3; /* Internal USB port */
+};
+
+&chosen {
+	stdout-path = &uarta;
+};
+
+&i2c5 {
+	status = "okay";
+	clock-frequency = <400000>;
+
+	/* Texas Instruments TPS659110 PMIC */
+	pmic: tps65911@2d {
+		compatible = "ti,tps65911";
+		reg = <0x2d>;
+
+		interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+		#interrupt-cells = <2>;
+		interrupt-controller;
+
+		ti,system-power-controller;
+
+		#gpio-cells = <2>;
+		gpio-controller;
+
+		regulators {
+			/* eMMC VDD */
+			ldo1 {
+				regulator-name = "vdd_emmc_core";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+			};
+
+			/* uSD slot VDD */
+			vdd_usd: ldo2 {
+				regulator-name = "vdd_usd";
+				regulator-min-microvolt = <3100000>;
+				regulator-max-microvolt = <3100000>;
+			};
+
+			/* uSD slot VDDIO */
+			vddio_usd: ldo3 {
+				regulator-name = "vddio_usd";
+				regulator-min-microvolt = <3100000>;
+				regulator-max-microvolt = <3100000>;
+			};
+		};
+	};
+};
+
+&memory {
+		reg = <0x80000000 0x80000000>;
+};
+
+&sdmmc1 {
+	status = "okay";
+	bus-width = <4>;
+
+	cd-gpios = <&gpio TEGRA_GPIO(I, 5) GPIO_ACTIVE_LOW>;
+
+	vmmc-supply = <&vdd_usd>;
+	vqmmc-supply = <&vddio_usd>;
+};
+
+&sdmmc4 {
+	status = "okay";
+	bus-width = <8>;
+	non-removable;
+};
+
+&uarta {
+	status = "okay";
+};
+
+/* USB via ASUS connector */
+&usb1 {
+	status = "okay";
+	dr_mode = "otg";
+};
+
+/* mini-USB port */
+&usb2 {
+	nvidia,vbus-gpio = <&gpio TEGRA_GPIO(H, 7) GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+/* Internal USB port */
+&usb3 {
+	status = "okay";
 };

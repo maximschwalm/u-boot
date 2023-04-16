@@ -114,39 +114,46 @@ void board_sdmmc_voltage_init(void)
 		return;
 	}
 
-	/* TPS659110: VDD1_REG = 1.2v, ACTIVE to TF600T backlight */
-	ret = dm_i2c_reg_write(dev, TPS65911_VDD1_OP, 0x33);
-	if (ret)
-		printf("vdd1 voltage set failed: %d\n", ret);
+	if (of_machine_is_compatible("asus,tf600t")) {
+		/* TPS659110: VDD1_REG = 1.2v, ACTIVE to TF600T backlight */
+		ret = dm_i2c_reg_write(dev, TPS65911_VDD1_OP, 0x33);
+		if (ret)
+			printf("vdd1 voltage set failed: %d\n", ret);
 
-	ret = dm_i2c_reg_write(dev, TPS65911_VDD1, 0x0d);
-	if (ret)
-		printf("vdd1 enable failed: %d\n", ret);
+		ret = dm_i2c_reg_write(dev, TPS65911_VDD1, 0x0d);
+		if (ret)
+			printf("vdd1 enable failed: %d\n", ret);
+	}
 
 	/* TPS659110: LDO1_REG = 3.3v, ACTIVE to SDMMC4 */
 	ret = dm_i2c_reg_write(dev, TPS65911_LDO1, 0xc9);
 	if (ret)
 		printf("vcore_emmc set failed: %d\n", ret);
 
-	/* TPS659110: LDO2_REG = 3.1v, ACTIVE to SDMMC1 */
-	ret = dm_i2c_reg_write(dev, TPS65911_LDO2, 0xb9);
-	if (ret)
-		printf("vdd_usd set failed: %d\n", ret);
 
-	/* TPS659110: LDO3_REG = 3.1v, ACTIVE to SDMMC1 VIO */
-	ret = dm_i2c_reg_write(dev, TPS65911_LDO3, 0x5d);
-	if (ret)
-		printf("vddio_usd set failed: %d\n", ret);
+	if (!of_machine_is_compatible("asus,tf600t")) {
+		/* TPS659110: LDO2_REG = 3.1v, ACTIVE to SDMMC1 */
+		ret = dm_i2c_reg_write(dev, TPS65911_LDO2, 0xb9);
+		if (ret)
+			printf("vdd_usd set failed: %d\n", ret);
 
-	/* TPS659110: LDO5_REG = 3.3v, ACTIVE to SDMMC1 VIO */
-	ret = dm_i2c_reg_write(dev, TPS65911_LDO5, 0x65);
-	if (ret)
-		printf("vio_sdmmc1 set failed: %d\n", ret);
+		/* TPS659110: LDO3_REG = 3.1v, ACTIVE to SDMMC1 VIO */
+		ret = dm_i2c_reg_write(dev, TPS65911_LDO3, 0x5d);
+		if (ret)
+			printf("vddio_usd set failed: %d\n", ret);
+	}
 
-	/* TPS659110: LDO6_REG = 1.2v, ACTIVE to MIPI */
-	ret = dm_i2c_reg_write(dev, TPS65911_LDO6, 0x11);
-	if (ret)
-		printf("vdd_mipi set failed: %d\n", ret);
+	if (of_machine_is_compatible("asus,tf600t")) {
+		/* TPS659110: LDO5_REG = 3.3v, ACTIVE to SDMMC1 VIO */
+		ret = dm_i2c_reg_write(dev, TPS65911_LDO5, 0x65);
+		if (ret)
+			printf("vio_sdmmc1 set failed: %d\n", ret);
+
+		/* TPS659110: LDO6_REG = 1.2v, ACTIVE to MIPI */
+		ret = dm_i2c_reg_write(dev, TPS65911_LDO6, 0x11);
+		if (ret)
+			printf("vdd_mipi set failed: %d\n", ret);
+	}
 
 	/* TPS659110: GPIO0_REG output high to VDD_5V0_SBY */
 	ret = dm_i2c_reg_write(dev, TPS65911_GPIO0, 0x07);

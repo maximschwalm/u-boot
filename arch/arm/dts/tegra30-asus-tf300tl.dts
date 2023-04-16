@@ -3,8 +3,10 @@
 
 #include <dt-bindings/input/input.h>
 
+#include "tegra30-asus-lvds-display.dtsi"
 #include "tegra30-asus-transformer.dtsi"
 
 / {
 	model = "ASUS Transformer Pad LTE TF300TL";
+	compatible = "asus,tf300tl", "nvidia,tegra30";
 };

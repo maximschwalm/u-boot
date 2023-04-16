@@ -6,9 +6,6 @@
 #include "tegra30-asus-transformer.dtsi"
 
 / {
-	model = "ASUS Transformer Infinity TF700T";
-
-	/delete-node/ host1x@50000000;
-	
-	/delete-node/ panel;
+	model = "ASUS Transformer Pad Infinity TF700T";
+	compatible = "asus,tf700t", "nvidia,tegra30";
 };

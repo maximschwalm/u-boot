@@ -3,8 +3,10 @@
 
 #include <dt-bindings/input/input.h>
 
+#include "tegra30-asus-lvds-display.dtsi"
 #include "tegra30-asus-transformer.dtsi"
 
 / {
 	model = "ASUS Transformer Prime TF201";
+	compatible = "asus,tf201", "nvidia,tegra30";
 };
